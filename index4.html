@@ -1,0 +1,1413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nav's Portfolio</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root {
+  /* Layout: full-screen wallpaper hero with centered name, project grid that opens into detail pages with demos, about, skills, contact */
+  --bg: #F1F4F4;
+  --surface: #FFFFFF;
+  --ink: #0F1B1F;
+  --muted: #52646B;
+  --line: #D3DCDE;
+  --accent: #1D4ED8;
+  --accent-ink: #FFFFFF;
+  --tint: #E4EBFB;
+  --ok: #17794A;
+  --warn: #B4540A;
+  --plot-dot: #7A8B91;
+  --hero-ink: #F4F8F9;
+  --hero-muted: #C0CED2;
+  --hero-accent: #9DB8FF;
+  --hero-on-accent: #0B1020;
+  --font-display: 'Bricolage Grotesque', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0C1315;
+    --surface: #121C1F;
+    --ink: #E4EDEE;
+    --muted: #93A6AC;
+    --line: #25343A;
+    --accent: #7C9BFF;
+    --accent-ink: #0C1315;
+    --tint: #1A2742;
+    --ok: #4CC38A;
+    --warn: #F0A04B;
+    --plot-dot: #7F9299;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0C1315;
+  --surface: #121C1F;
+  --ink: #E4EDEE;
+  --muted: #93A6AC;
+  --line: #25343A;
+  --accent: #7C9BFF;
+  --accent-ink: #0C1315;
+  --tint: #1A2742;
+  --ok: #4CC38A;
+  --warn: #F0A04B;
+  --plot-dot: #7F9299;
+  color-scheme: dark;
+}
+
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.1; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+
+.wrap { max-width: 1080px; margin-inline: auto; padding-inline: clamp(16px, 4vw, 32px); }
+
+/* header: fixed over the hero, turns solid after you scroll */
+.site-head { position: fixed; top: 0; left: 0; right: 0; z-index: 10; padding-top: env(safe-area-inset-top, 0px); border-bottom: 1px solid transparent; transition: background 0.2s, border-color 0.2s; }
+.site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 8px 20px; padding-block: 12px; flex-wrap: wrap; }
+.site-head.solid { background: var(--bg); border-bottom-color: var(--line); }
+.brand { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -0.01em; color: var(--hero-ink); text-decoration: none; }
+.site-head.solid .brand { color: var(--ink); }
+.site-nav { display: flex; align-items: center; gap: 6px 20px; flex-wrap: wrap; font-size: 0.8rem; letter-spacing: 0.07em; text-transform: uppercase; }
+.site-nav a { color: var(--hero-ink); text-decoration: none; }
+.site-nav a:hover { text-decoration: underline; text-underline-offset: 5px; }
+.site-head.solid .site-nav a { color: var(--muted); }
+.site-head.solid .site-nav a:hover { color: var(--ink); }
+.site-nav a.resume-link { border: 1px solid currentColor; border-radius: 6px; padding: 4px 12px; }
+
+/* hero: wallpaper (canvas or image), scrim, centered text */
+.hero { position: relative; overflow: hidden; min-height: clamp(540px, 84vh, 800px); display: flex; align-items: center; color: var(--hero-ink); background: #0B1A20; }
+#wall, .wall-img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.wall-img { background-size: cover; background-position: 20% center; display: none; }
+.scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.22) 45%, rgba(0,0,0,0.55) 100%); }
+.hero-inner { position: relative; width: 100%; padding-block: 120px 100px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.kicker { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--hero-muted); }
+.hero h1 { font-size: clamp(3.6rem, 12vw, 8rem); font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: var(--hero-accent); line-height: 1; }
+.tagline { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.25rem, 3.4vw, 2.1rem); line-height: 1.2; text-wrap: balance; max-width: 30ch; }
+.cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 14px; }
+.btn { display: inline-block; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; text-decoration: none; border: 1px solid var(--line); color: var(--ink); background: var(--surface); }
+.btn:hover { border-color: var(--ink); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { filter: brightness(1.08); }
+.hero .btn { background: transparent; color: var(--hero-ink); border-color: rgba(255,255,255,0.6); }
+.hero .btn:hover { border-color: #fff; }
+.hero .btn.primary { background: var(--hero-accent); border-color: var(--hero-accent); color: var(--hero-on-accent); }
+
+.hero.has-img .kicker, .hero.has-img h1, .hero.has-img .tagline { text-shadow: 0 2px 20px rgba(0,0,0,0.7); }
+.hero.has-img .scrim { background: rgba(0,0,0,0.4); }
+@media (min-width: 900px) {
+  .hero.has-img .hero-inner { max-width: none; margin-inline: 0; padding-left: 56%; padding-right: 32px; align-items: flex-start; text-align: left; }
+  .hero.has-img .cta { justify-content: flex-start; }
+  .hero.has-img .scrim { background: linear-gradient(90deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0.55) 100%); }
+}
+.wall-picker { position: absolute; right: 16px; bottom: 16px; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; max-width: min(760px, calc(100% - 32px)); padding: 8px; border-radius: 10px; background: rgba(0,0,0,0.55); font-size: 0.75rem; color: var(--hero-ink); }
+.wall-picker .lbl { font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; padding-inline: 4px; }
+.wall-picker button { font: inherit; font-size: 0.78rem; color: var(--hero-ink); background: transparent; border: 1px solid rgba(255,255,255,0.4); border-radius: 6px; padding: 3px 9px; cursor: pointer; }
+.wall-picker button:hover { border-color: #fff; }
+.wall-picker button[aria-pressed="true"] { background: #fff; color: #0B1020; border-color: #fff; }
+@media (max-width: 520px) { .site-nav { gap: 6px 12px; font-size: 0.72rem; } .site-nav a.resume-link { padding: 3px 9px; } }
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 20; max-width: calc(100% - 32px); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 8px; font-size: 0.9rem; }
+
+.plot-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 14px 12px; min-width: 0; }
+.plot-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+.plot-title { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.link-btn { font: inherit; font-family: var(--font-mono); font-size: 0.75rem; background: none; border: 1px solid var(--line); color: var(--ink); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+.link-btn:hover { border-color: var(--ink); }
+.link-btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+#plot { display: block; width: 100%; aspect-ratio: 16 / 10; max-width: 100%; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 10px; font-size: 0.8rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.sw-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--plot-dot); }
+.sw-line { width: 18px; height: 0; border-top: 2.5px solid var(--accent); }
+.sw-dash { width: 18px; height: 0; border-top: 1.5px dashed var(--muted); }
+.plot-note { margin-top: 8px; font-size: 0.8rem; color: var(--muted); max-width: 62ch; }
+
+/* sections */
+section.block { padding-block: clamp(36px, 6vw, 72px); border-top: 1px solid var(--line); scroll-margin-top: 64px; }
+.block h2 { font-size: clamp(1.6rem, 3.4vw, 2.2rem); font-weight: 700; letter-spacing: -0.015em; }
+.block .intro { margin-top: 10px; color: var(--muted); max-width: 62ch; }
+
+/* project list */
+.filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 24px; }
+.filter-row button { font: inherit; font-size: 0.85rem; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
+.filter-row button:hover { border-color: var(--ink); }
+.filter-row button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.filter-count { margin-left: auto; font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); }
+.grid { display: grid; gap: 16px; grid-template-columns: 1fr; margin-top: 20px; }
+@media (min-width: 720px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .project.featured { grid-column: span 2; }
+}
+.project { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 22px; display: flex; flex-direction: column; gap: 12px; min-width: 0; color: inherit; text-decoration: none; transition: border-color 0.15s; }
+.project:hover { border-color: var(--accent); }
+.project.featured { padding: 28px; }
+.project-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.project h3 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; }
+.project.featured h3 { font-size: 1.6rem; }
+.project p { color: var(--muted); font-size: 0.97rem; max-width: 70ch; }
+.status { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.status.published::before { background: var(--ok); }
+.status.progress::before { background: var(--warn); }
+.project-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-top: auto; padding-top: 4px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 0; }
+.tags li { font-family: var(--font-mono); font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; background: var(--tint); color: var(--ink); }
+.open-hint { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); white-space: nowrap; }
+.demo-chip { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: 1px 8px; }
+
+/* project detail */
+.detail-head { margin-top: 20px; display: flex; flex-direction: column; gap: 14px; }
+.detail-head h2 { font-size: clamp(1.9rem, 4.4vw, 3rem); font-weight: 800; letter-spacing: -0.02em; }
+.detail-grid { display: grid; gap: 32px; grid-template-columns: 1fr; margin-top: 28px; align-items: start; }
+@media (min-width: 980px) { .detail-grid.has-demo { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.3fr); gap: 44px; } }
+.detail-text { display: flex; flex-direction: column; gap: 14px; min-width: 0; max-width: 64ch; }
+.detail-text .lead { font-size: 1.08rem; color: var(--ink); }
+.detail-text h3 { font-size: 0.78rem; font-family: var(--font-mono); font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-top: 10px; }
+.detail-text ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+.detail-text li::marker { color: var(--muted); }
+.detail-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.pager { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line); }
+.pager .link-btn { font-family: var(--font-body); font-size: 0.9rem; padding: 8px 14px; }
+
+/* demos */
+.demo-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; min-width: 0; }
+.demo-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.note-chip { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+.controls { display: grid; gap: 10px 20px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 12px; align-items: end; }
+.ctl { display: grid; gap: 2px; grid-template-columns: 1fr auto; align-items: center; }
+.ctl label { font-size: 0.82rem; color: var(--muted); }
+.ctl output { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink); }
+.ctl input { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); margin: 4px 0 0; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.demo-canvas { display: block; width: 100%; max-width: 100%; touch-action: manipulation; }
+.demo-canvas.probe { cursor: crosshair; }
+.readouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 14px 0 0; }
+.readouts dt { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.readouts dd { margin: 2px 0 0; font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+.demo-note { margin-top: 12px; font-size: 0.8rem; color: var(--muted); max-width: 70ch; }
+
+.cue-input { width: 100%; font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 14px; }
+.cue-out { border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: var(--bg); min-height: 5.5rem; }
+.cue-out .sentence { font-size: 1.05rem; }
+.cue-out mark { background: var(--tint); color: var(--ink); border-radius: 3px; padding: 0 3px; border-bottom: 2px solid var(--accent); }
+.cue-out .verdict { margin-top: 10px; font-family: var(--font-mono); font-size: 0.82rem; color: var(--muted); }
+.cue-out .verdict strong { color: var(--ink); }
+
+.steps { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.step { display: flex; align-items: center; gap: 8px; font: inherit; font-size: 0.88rem; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); cursor: pointer; }
+.step .n { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); }
+.step[aria-pressed="true"] { border-color: var(--accent); background: var(--tint); }
+.step-detail { border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: var(--bg); }
+.step-detail h4 { font-size: 1.1rem; font-weight: 700; }
+.step-detail p { margin-top: 6px; color: var(--muted); font-size: 0.95rem; }
+.step-detail .out { margin-top: 10px; font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink); }
+
+/* about */
+.about-grid { display: grid; gap: 36px; grid-template-columns: 1fr; margin-top: 24px; }
+@media (min-width: 800px) { .about-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 56px; } }
+.prose { display: flex; flex-direction: column; gap: 16px; max-width: 62ch; }
+.edu { margin: 0; display: grid; gap: 18px; }
+.edu dt { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+.edu dd { margin: 2px 0 0; color: var(--muted); font-size: 0.93rem; }
+.edu-label { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+/* skills */
+.skills { margin: 24px 0 0; display: grid; }
+.skill-row { display: grid; gap: 8px 32px; grid-template-columns: 1fr; padding-block: 18px; border-top: 1px solid var(--line); }
+.skill-row:last-child { border-bottom: 1px solid var(--line); }
+@media (min-width: 720px) { .skill-row { grid-template-columns: 200px minmax(0, 1fr); } }
+.skill-row dt { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+.skill-row dd { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.skill-row dd span { font-size: 0.88rem; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+
+/* contact */
+.contact p { margin-top: 12px; max-width: 56ch; }
+.contact-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+footer.site-foot { border-top: 1px solid var(--line); padding-block: 24px; color: var(--muted); font-size: 0.85rem; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="site-head" id="siteHead">
+  <div class="wrap">
+    <a class="brand" href="#top">Nav</a>
+    <nav class="site-nav" aria-label="Sections">
+      <a href="#about">About</a>
+      <a href="#projects" id="nav-projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+      <a href="#" class="resume-link" data-resume>Resume</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" id="hero">
+    <canvas id="wall" aria-hidden="true"></canvas>
+    <div class="wall-img" id="wallImg" aria-hidden="true"></div>
+    <div class="scrim"></div>
+    <div class="wrap hero-inner">
+      <p class="kicker">MS Artificial Intelligence, UT Austin, 2026</p>
+      <h1>Nav</h1>
+      <p class="tagline">AI/ML Engineer and Robotics Engineer</p>
+      <div class="cta">
+        <a class="btn primary" href="#" data-resume>Resume</a>
+        <a class="btn" href="#projects" id="cta-projects">See projects</a>
+      </div>
+    </div>
+    <div class="wall-picker" id="wallPicker" hidden></div>
+    <input type="file" id="wallFile" accept="image/*" hidden>
+  </section>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <section class="block" id="projects">
+    <div class="wrap">
+      <div id="listView">
+        <h2>Projects</h2>
+        <p class="intro">Everything here is graduate coursework or work I started on my own. Open a project to see how it works, what came out of it and, for most of them, an interactive demo.</p>
+
+        <div class="filter-row" role="group" aria-label="Filter projects by status">
+          <button type="button" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" data-filter="published" aria-pressed="false">Published</button>
+          <button type="button" data-filter="progress" aria-pressed="false">In progress</button>
+          <button type="button" data-filter="coursework" aria-pressed="false">Coursework</button>
+          <span class="filter-count" id="count" aria-live="polite"></span>
+        </div>
+        <div class="grid" id="grid"></div>
+      </div>
+      <div id="detailView" hidden></div>
+    </div>
+  </section>
+
+  <section class="block" id="about">
+    <div class="wrap">
+      <h2>About</h2>
+      <div class="about-grid">
+        <div class="prose">
+          <p>My journey began in mechanical engineering, where I discovered my passion for robotics and the potential of technology to make a meaningful difference in people's lives.</p>
+          <p>Inspired by Johns Hopkins' research on mind-controlled prosthetics, I became fascinated by how intelligent systems could improve accessibility, restore independence, and extend human capabilities. That curiosity led me to pursue a master's in Artificial Intelligence.</p>
+          <p>I'm passionate about building intelligent technology that connects AI with the real world, whether through robotics, machine learning, or software engineering. I'm driven by curiosity, a love for solving challenging problems, and the belief that technology is most powerful when it empowers people. <strong>Open to opportunities in AI/ML Engineering, Software Engineering, and Robotics Engineering.</strong></p>
+        </div>
+        <div>
+          <p class="edu-label">Education</p>
+          <dl class="edu">
+            <div>
+              <dt>MS, Artificial Intelligence</dt>
+              <dd>UT Austin, graduated 2026</dd>
+            </div>
+            <div>
+              <dt>MS, Automation and Robotics</dt>
+              <dd>Completed before UT Austin</dd>
+            </div>
+            <div>
+              <dt>BS, Mechanical Engineering</dt>
+              <dd>Undergraduate degree</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="skills">
+    <div class="wrap">
+      <h2>Skills</h2>
+      <dl class="skills">
+        <div class="skill-row">
+          <dt>Machine learning</dt>
+          <dd><span>Python</span><span>PyTorch</span><span>TensorFlow</span><span>scikit-learn</span><span>Sentence-Transformers</span><span>CLIP</span><span>spaCy</span><span>ChromaDB</span><span>Azure OpenAI</span><span>Semantic Kernel</span></dd>
+        </div>
+        <div class="skill-row">
+          <dt>Robotics</dt>
+          <dd><span>ROS2 Humble</span><span>Gazebo (TurtleBot, URDF)</span><span>OpenCV</span><span>MATLAB / Simulink</span><span>ROBOGUIDE</span><span>Certified Robotics Programmer</span></dd>
+        </div>
+        <div class="skill-row">
+          <dt>Software and cloud</dt>
+          <dd><span>FastAPI</span><span>Streamlit</span><span>React (learning)</span><span>Supabase</span><span>SQL</span><span>C / C++</span><span>Azure App Service, Static Web Apps, Cosmos DB, Key Vault</span><span>BigQuery (MIMIC)</span></dd>
+        </div>
+        <div class="skill-row">
+          <dt>Industrial and mechanical</dt>
+          <dd><span>PLC programming (Studio 5000, TIA Portal, CODESYS)</span><span>ProfiNet / EtherNet/IP</span><span>VFDs</span><span>SolidWorks</span><span>CATIA</span><span>Siemens NX</span><span>ANSYS</span></dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="block contact" id="contact">
+    <div class="wrap">
+      <h2>Contact</h2>
+      <p>I'm open to AI/ML engineer and software engineer roles, and happy to talk about any project above.</p>
+      <div class="contact-links" id="links"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">Nav, 2026</div>
+</footer>
+
+<script>
+(function () {
+  /* Contact links: add items like { label: 'GitHub', href: 'https://github.com/...' } */
+  var LINKS = [];
+
+  /* ---- Settings you can change ---- */
+  var RESUME_URL = '';                /* for example 'resume.pdf', placed in the same folder as index.html */
+  var HERO_IMAGE = '';                /* for example 'wallpaper.jpg', placed in the same folder. Leave empty to use a built-in wallpaper */
+  var DEFAULT_WALLPAPER = 'neural';   /* circuit, neural, blueprint, aurora, stream, hex, lidar, loss, stars or telemetry */
+  var SHOW_WALLPAPER_PICKER = false;   /* set to false to hide the wallpaper buttons on the live site */
+
+  /*PURE-START*/
+  var DT = 1 / 90;
+  function rng(seed) {
+    return function () {
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function gauss(r) {
+    var u = 0, v = r();
+    while (!u) u = r();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+  /* constant-velocity Kalman filter on one axis; a null measurement means predict only */
+  function kf(zs, q, rv) {
+    var x = zs[0], v = 0, p00 = 1, p01 = 0, p10 = 0, p11 = 1, out = [];
+    for (var i = 0; i < zs.length; i++) {
+      x += v * DT;
+      var n00 = p00 + DT * (p10 + p01) + DT * DT * p11 + q * DT * DT * DT / 3;
+      var n01 = p01 + DT * p11 + q * DT * DT / 2;
+      var n10 = p10 + DT * p11 + q * DT * DT / 2;
+      var n11 = p11 + q * DT;
+      p00 = n00; p01 = n01; p10 = n10; p11 = n11;
+      var z = zs[i];
+      if (z !== null) {
+        var s = p00 + rv, k0 = p00 / s, k1 = p10 / s, y = z - x;
+        x += k0 * y; v += k1 * y;
+        var a00 = (1 - k0) * p00, a01 = (1 - k0) * p01, a10 = p10 - k1 * p00, a11 = p11 - k1 * p01;
+        p00 = a00; p01 = a01; p10 = a10; p11 = a11;
+      }
+      out.push(x);
+    }
+    return out;
+  }
+  function trajectory(o) {
+    var N = 90, R = rng(o.seed), truth = [], meas = [], mx = [], my = [], g1 = o.g0 + o.gap;
+    for (var i = 0; i <= N; i++) {
+      var t = i / N;
+      var x = 0.04 + 0.92 * t;
+      var y = 0.5 + 0.27 * Math.sin(2 * Math.PI * 1.15 * t + 0.3) + 0.06 * Math.sin(2 * Math.PI * 3 * t);
+      truth.push([x, y]);
+      var gap = o.gap > 0 && t > o.g0 && t < g1;
+      var m = gap ? null : [x + o.nx * gauss(R), y + o.ny * gauss(R)];
+      meas.push(m);
+      mx.push(m ? m[0] : null);
+      my.push(m ? m[1] : null);
+    }
+    var ex = kf(mx, 40 * o.qs, o.nx * o.nx), ey = kf(my, 60 * o.qs, o.ny * o.ny);
+    return { N: N, truth: truth, meas: meas, ex: ex, ey: ey, g0: o.g0, g1: g1, gap: o.gap };
+  }
+
+  /* isolation forest */
+  function cfun(n) { return n <= 1 ? 0 : 2 * (Math.log(n - 1) + 0.5772156649) - 2 * (n - 1) / n; }
+  function buildTree(pts, depth, maxD, R) {
+    if (depth >= maxD || pts.length <= 1) return { leaf: true, size: pts.length };
+    var q = R() < 0.5 ? 0 : 1, mn = Infinity, mx = -Infinity, i;
+    for (i = 0; i < pts.length; i++) { var v = pts[i][q]; if (v < mn) mn = v; if (v > mx) mx = v; }
+    if (mn === mx) return { leaf: true, size: pts.length };
+    var sp = mn + R() * (mx - mn), L = [], Rt = [];
+    for (i = 0; i < pts.length; i++) { (pts[i][q] < sp ? L : Rt).push(pts[i]); }
+    return { q: q, sp: sp, l: buildTree(L, depth + 1, maxD, R), r: buildTree(Rt, depth + 1, maxD, R) };
+  }
+  function buildForest(data, T, psi, R) {
+    var trees = [], maxD = Math.ceil(Math.log(psi) / Math.LN2), size = Math.min(psi, data.length);
+    for (var t = 0; t < T; t++) {
+      var idx = data.map(function (_, i) { return i; });
+      for (var i = idx.length - 1; i > 0; i--) {
+        var j = Math.floor(R() * (i + 1)), tmp = idx[i]; idx[i] = idx[j]; idx[j] = tmp;
+      }
+      var sub = idx.slice(0, size).map(function (k) { return data[k]; });
+      trees.push(buildTree(sub, 0, maxD, R));
+    }
+    return { trees: trees, c: cfun(size) };
+  }
+  function pathLen(node, x) {
+    var d = 0;
+    while (!node.leaf) { node = x[node.q] < node.sp ? node.l : node.r; d++; }
+    return d + cfun(node.size);
+  }
+  function forestScore(F, x) {
+    var s = 0;
+    for (var i = 0; i < F.trees.length; i++) s += pathLen(F.trees[i], x);
+    return Math.pow(2, -(s / F.trees.length) / F.c);
+  }
+  /*PURE-END*/
+
+  /* ---------- helpers ---------- */
+  var uid = 0;
+  function css(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+  function fit(cv) {
+    var dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+    if (!w || !h) return null;
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    }
+    var c = cv.getContext('2d');
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    c.clearRect(0, 0, w, h);
+    return { c: c, w: w, h: h };
+  }
+  function ctl(parent, label, min, max, step, val, fmt, cb) {
+    var id = 'ctl' + (++uid), w = el('div', 'ctl');
+    w.innerHTML = '<label for="' + id + '">' + label + '</label><output for="' + id + '"></output><input id="' + id + '" type="range" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '">';
+    var inp = w.querySelector('input'), out = w.querySelector('output');
+    function upd() { out.textContent = fmt(+inp.value); }
+    inp.addEventListener('input', function () { upd(); cb(+inp.value); });
+    upd();
+    parent.appendChild(w);
+    return inp;
+  }
+  function btn(parent, label, cb, cls) {
+    var b = el('button', cls || 'link-btn', label);
+    b.type = 'button';
+    b.addEventListener('click', cb);
+    parent.appendChild(b);
+    return b;
+  }
+  function canvasIn(parent, ratio, label) {
+    var c = el('canvas', 'demo-canvas');
+    c.setAttribute('role', 'img');
+    c.setAttribute('aria-label', label);
+    c.style.aspectRatio = ratio;
+    parent.appendChild(c);
+    return c;
+  }
+  function readout(dl, rows) {
+    dl.innerHTML = rows.map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + r[1] + '</dd></div>'; }).join('');
+  }
+  function mono(c, size) { c.font = '400 ' + size + 'px ' + css('--font-mono'); }
+
+  /* ---------- trajectory drawing (hero and Kalman demo) ---------- */
+  function drawTraj(cv, d, p) {
+    var f = fit(cv);
+    if (!f) return;
+    var ctx = f.c, w = f.w, h = f.h;
+    var line = css('--line'), muted = css('--muted'), accent = css('--accent'), dot = css('--plot-dot'), tint = css('--tint');
+    var padL = 28, padR = 10, padT = 10, padB = 24;
+    var pw = w - padL - padR, ph = h - padT - padB;
+    function X(v) { return padL + v * pw; }
+    function Y(v) { return padT + (1 - v) * ph; }
+
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = line;
+    for (var g = 0; g <= 4; g++) {
+      var gy = Math.round(padT + g * ph / 4) + 0.5;
+      ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(padL + pw, gy); ctx.stroke();
+    }
+    for (var gx = 0; gx <= 8; gx++) {
+      var gxx = Math.round(padL + gx * pw / 8) + 0.5;
+      ctx.beginPath(); ctx.moveTo(gxx, padT); ctx.lineTo(gxx, padT + ph); ctx.stroke();
+    }
+    if (d.gap > 0) {
+      var gx0 = X(0.04 + 0.92 * d.g0), gx1 = X(0.04 + 0.92 * d.g1);
+      ctx.fillStyle = tint;
+      ctx.fillRect(gx0, padT, gx1 - gx0, ph);
+      ctx.fillStyle = muted;
+      ctx.font = '500 10px ' + css('--font-mono');
+      ctx.textAlign = 'center';
+      ctx.fillText('SENSOR DROPOUT', (gx0 + gx1) / 2, padT + 13);
+    }
+    var last = Math.max(1, Math.round(p * d.N));
+
+    ctx.save();
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = muted;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    for (var i = 0; i <= last; i++) {
+      var px = X(d.truth[i][0]), py = Y(d.truth[i][1]);
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.fillStyle = dot;
+    for (var j = 0; j <= last; j++) {
+      if (!d.meas[j]) continue;
+      ctx.beginPath();
+      ctx.arc(X(d.meas[j][0]), Y(d.meas[j][1]), 2.4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+    for (var k = 1; k <= last; k++) {
+      ctx.beginPath();
+      ctx.setLineDash(d.meas[k] ? [] : [6, 4]);
+      ctx.moveTo(X(d.ex[k - 1]), Y(clamp(d.ey[k - 1], -0.05, 1.05)));
+      ctx.lineTo(X(d.ex[k]), Y(clamp(d.ey[k], -0.05, 1.05)));
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = muted;
+    mono(ctx, 10);
+    ctx.textAlign = 'right';
+    ctx.fillText('time', padL + pw, h - 7);
+    ctx.save();
+    ctx.translate(10, padT + ph / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText('position', 0, 0);
+    ctx.restore();
+  }
+
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- demos ---------- */
+  var active = null;
+
+  function demoKalman(box) {
+    var st = { nz: 0.03, gap: 0.18, qs: 1, seed: 11 };
+    var controls = el('div', 'controls'), cvs, read = el('dl', 'readouts');
+    box.appendChild(controls);
+    cvs = canvasIn(box, '16 / 10', 'Robot path with noisy sensor readings, a filtered estimate and an optional sensor dropout.');
+    box.appendChild(read);
+    ctl(controls, 'Sensor noise', 0.01, 0.06, 0.005, st.nz, function (v) { return v.toFixed(3); }, function (v) { st.nz = v; redraw(); });
+    ctl(controls, 'Dropout length', 0, 0.3, 0.02, st.gap, function (v) { return Math.round(v * 100) + '% of run'; }, function (v) { st.gap = v; redraw(); });
+    ctl(controls, 'Filter responsiveness', 0.25, 4, 0.25, st.qs, function (v) { return v.toFixed(2) + 'x'; }, function (v) { st.qs = v; redraw(); });
+    var row = el('div', 'btn-row');
+    btn(row, 'New noise sample', function () { st.seed++; redraw(); });
+    box.insertBefore(row, cvs);
+    box.appendChild(el('p', 'demo-note', 'Synthetic path and noise, filtered live in your browser with a constant-velocity Kalman filter. Higher responsiveness follows the sensor more closely, and lower values smooth more but lag in the turns. The LSTM half of the project is not shown here.'));
+    function redraw() {
+      var d = trajectory({ seed: st.seed, nx: st.nz * 0.4, ny: st.nz, g0: 0.5, gap: st.gap, qs: st.qs });
+      drawTraj(cvs, d, 1);
+      var rs = 0, fs = 0, n = 0, dm = 0;
+      for (var i = 0; i <= d.N; i++) {
+        var e = d.ey[i] - d.truth[i][1];
+        if (d.meas[i]) { var a = d.meas[i][1] - d.truth[i][1]; rs += a * a; fs += e * e; n++; }
+        else dm = Math.max(dm, Math.abs(e));
+      }
+      readout(read, [
+        ['Raw sensor error', (Math.sqrt(rs / n) * 100).toFixed(1) + '%'],
+        ['Filtered error', (Math.sqrt(fs / n) * 100).toFixed(1) + '%'],
+        ['Drift in dropout', st.gap > 0 ? (dm * 100).toFixed(1) + '%' : 'none']
+      ]);
+    }
+    redraw();
+    return { redraw: redraw };
+  }
+
+  function demoAnomaly(box) {
+    var n = 240, F0 = 150, st = { fault: 'spike', thr: 0.06, seed: 5 }, data = [], fEnd = F0 + 10;
+    var controls = el('div', 'controls'), cvs, read = el('dl', 'readouts'), faultBtns = {};
+    function gen() {
+      var R = rng(st.seed * 31 + 7);
+      fEnd = F0 + (st.fault === 'spike' ? 10 : st.fault === 'drift' ? 50 : 40);
+      data = [];
+      for (var k = 0; k < n; k++) {
+        var base = 0.5 * Math.sin(2 * Math.PI * k / 40), nz = 0.07 * gauss(R), x = base + nz;
+        var inF = k >= F0 && k < fEnd;
+        if (inF) {
+          if (st.fault === 'spike') x += 0.9 * Math.exp(-(k - F0) / 4);
+          else if (st.fault === 'drift') x += 0.8 * (k - F0) / 50;
+          else x = 0.35 + 0.15 * nz;
+        }
+        data.push({ x: x, base: base, err: (x - base) * (x - base), fault: inF });
+      }
+    }
+    var row = el('div', 'btn-row');
+    [['spike', 'Spike'], ['drift', 'Drift'], ['stuck', 'Stuck sensor']].forEach(function (f) {
+      faultBtns[f[0]] = btn(row, f[1], function () { st.fault = f[0]; gen(); redraw(); });
+    });
+    btn(row, 'New run', function () { st.seed++; gen(); redraw(); });
+    box.appendChild(row);
+    box.appendChild(controls);
+    ctl(controls, 'Alert threshold', 0.01, 0.4, 0.01, st.thr, function (v) { return v.toFixed(2); }, function (v) { st.thr = v; redraw(); });
+    cvs = canvasIn(box, '16 / 11', 'Simulated robot joint signal with an injected fault, and the error score below it with an adjustable alert threshold.');
+    box.appendChild(read);
+    box.appendChild(el('p', 'demo-note', 'Simulated signal. The reconstruction is the clean waveform, standing in for what an autoencoder trained on normal data would reproduce, and the score is squared reconstruction error. This is not output from my trained network. Move the threshold to see the trade between missed faults and false alarms.'));
+    function redraw() {
+      var f = fit(cvs);
+      if (!f) return;
+      var c = f.c, w = f.w, h = f.h, pl = 12, pr = 10;
+      var pw = w - pl - pr, tTop = 8, tH = Math.round(h * 0.5), bTop = tTop + tH + 20, bH = h - bTop - 8;
+      var line = css('--line'), muted = css('--muted'), ink = css('--ink'), acc = css('--accent'), warn = css('--warn'), tint = css('--tint'), dot = css('--plot-dot');
+      function X(k) { return pl + (k / (n - 1)) * pw; }
+      function YS(v) { return tTop + (1 - (v + 1.3) / 2.8) * tH; }
+      var EM = 0.6;
+      function YE(v) { return bTop + (1 - Math.min(v, EM) / EM) * bH; }
+      c.lineWidth = 1; c.strokeStyle = line;
+      c.strokeRect(pl + 0.5, tTop + 0.5, pw, tH);
+      c.strokeRect(pl + 0.5, bTop + 0.5, pw, bH);
+      c.fillStyle = tint;
+      c.fillRect(X(F0), tTop, X(fEnd) - X(F0), tH);
+      c.fillRect(X(F0), bTop, X(fEnd) - X(F0), bH);
+      c.fillStyle = muted; mono(c, 10); c.textAlign = 'left';
+      c.fillText('joint current (simulated)', pl + 6, tTop + 14);
+      c.fillText('reconstruction error', pl + 6, bTop + 14);
+      c.textAlign = 'center';
+      c.fillText('FAULT', (X(F0) + X(fEnd)) / 2, tTop + tH - 6);
+      c.save(); c.setLineDash([4, 4]); c.strokeStyle = muted; c.lineWidth = 1;
+      c.beginPath();
+      data.forEach(function (d, k) { if (k === 0) c.moveTo(X(k), YS(d.base)); else c.lineTo(X(k), YS(d.base)); });
+      c.stroke(); c.restore();
+      c.strokeStyle = ink; c.lineWidth = 1.5; c.lineJoin = 'round';
+      c.beginPath();
+      data.forEach(function (d, k) { if (k === 0) c.moveTo(X(k), YS(d.x)); else c.lineTo(X(k), YS(d.x)); });
+      c.stroke();
+      var tp = 0, fn = 0, fa = 0, nn = 0, fcount = 0;
+      c.lineWidth = Math.max(1.5, pw / n * 0.7);
+      data.forEach(function (d, k) {
+        var flagged = d.err > st.thr;
+        if (d.fault) { fcount++; if (flagged) tp++; } else { nn++; if (flagged) fa++; }
+        c.strokeStyle = flagged ? warn : dot;
+        c.beginPath(); c.moveTo(X(k), bTop + bH); c.lineTo(X(k), YE(d.err)); c.stroke();
+        if (flagged) { c.fillStyle = warn; c.beginPath(); c.arc(X(k), YS(d.x), 3, 0, Math.PI * 2); c.fill(); }
+      });
+      c.save(); c.setLineDash([6, 4]); c.strokeStyle = acc; c.lineWidth = 1.5;
+      var ty = YE(st.thr);
+      c.beginPath(); c.moveTo(pl, ty); c.lineTo(pl + pw, ty); c.stroke(); c.restore();
+      c.fillStyle = acc; c.textAlign = 'right'; mono(c, 10);
+      c.fillText('threshold', pl + pw - 4, ty - 4);
+      Object.keys(faultBtns).forEach(function (k) { faultBtns[k].setAttribute('aria-pressed', String(k === st.fault)); });
+      readout(read, [
+        ['Fault samples caught', tp + ' of ' + fcount],
+        ['False alarms', fa + ' of ' + nn]
+      ]);
+    }
+    gen(); redraw();
+    return { redraw: redraw };
+  }
+
+  function demoForest(box) {
+    var st = { thr: 0.6, seed: 3, probe: [0.9, 0.12] };
+    var cols = 48, rows = 30, data, F, heat, pad = 10;
+    var controls = el('div', 'controls'), cvs, read = el('dl', 'readouts');
+    var row = el('div', 'btn-row');
+    btn(row, 'Resample data', function () { st.seed++; build(); redraw(); });
+    box.appendChild(row);
+    box.appendChild(controls);
+    ctl(controls, 'Anomaly threshold', 0.5, 0.8, 0.01, st.thr, function (v) { return v.toFixed(2); }, function (v) { st.thr = v; redraw(); });
+    cvs = canvasIn(box, '16 / 10', 'Two-dimensional scatter of simulated robot readings with an Isolation Forest anomaly score shown as shading. Click to score a point.');
+    cvs.classList.add('probe');
+    box.appendChild(read);
+    box.appendChild(el('p', 'demo-note', 'A real Isolation Forest (80 trees, written for this page) running on simulated joint current and motor temperature. Rings mark 10 anomalies injected at random, and some of them land inside the normal cluster, which a detector cannot be expected to catch. Click or tap anywhere to score a new reading.'));
+    function build() {
+      var R = rng(st.seed * 101 + 13), i;
+      data = [];
+      for (i = 0; i < 260; i++) {
+        var x = clamp(0.45 + 0.1 * gauss(R), 0.02, 0.98);
+        data.push([x, clamp(0.5 + 0.55 * (x - 0.45) + 0.05 * gauss(R), 0.02, 0.98), 0, 0]);
+      }
+      for (i = 0; i < 10; i++) data.push([0.05 + 0.9 * R(), 0.05 + 0.9 * R(), 1, 0]);
+      F = buildForest(data, 80, 128, R);
+      data.forEach(function (d) { d[3] = forestScore(F, d); });
+      heat = [];
+      for (var r = 0; r < rows; r++) {
+        heat.push([]);
+        for (var cc = 0; cc < cols; cc++) heat[r].push(forestScore(F, [(cc + 0.5) / cols, 1 - (r + 0.5) / rows]));
+      }
+    }
+    function redraw() {
+      var f = fit(cvs);
+      if (!f) return;
+      var c = f.c, w = f.w, h = f.h, pw = w - 2 * pad, ph = h - 2 * pad;
+      var line = css('--line'), muted = css('--muted'), acc = css('--accent'), warn = css('--warn'), dot = css('--plot-dot'), ink = css('--ink');
+      function X(v) { return pad + v * pw; }
+      function Y(v) { return pad + (1 - v) * ph; }
+      var cw = pw / cols, chh = ph / rows;
+      c.fillStyle = acc;
+      for (var r = 0; r < rows; r++) for (var q = 0; q < cols; q++) {
+        c.globalAlpha = 0.5 * clamp((heat[r][q] - 0.42) / 0.33, 0, 1);
+        c.fillRect(pad + q * cw, pad + r * chh, cw + 0.5, chh + 0.5);
+      }
+      c.globalAlpha = 1;
+      c.strokeStyle = line; c.lineWidth = 1;
+      c.strokeRect(pad + 0.5, pad + 0.5, pw, ph);
+      var flaggedAnom = 0, flagged = 0, normalFlag = 0;
+      data.forEach(function (d) {
+        var fl = d[3] > st.thr;
+        if (fl) { flagged++; if (d[2]) flaggedAnom++; else normalFlag++; }
+        c.fillStyle = fl ? warn : dot;
+        c.beginPath(); c.arc(X(d[0]), Y(d[1]), fl ? 3.2 : 2.2, 0, Math.PI * 2); c.fill();
+        if (d[2]) { c.strokeStyle = ink; c.lineWidth = 1.2; c.beginPath(); c.arc(X(d[0]), Y(d[1]), 6, 0, Math.PI * 2); c.stroke(); }
+      });
+      var ps = forestScore(F, st.probe), px = X(st.probe[0]), py = Y(st.probe[1]);
+      c.strokeStyle = ink; c.lineWidth = 2;
+      c.beginPath(); c.moveTo(px - 9, py); c.lineTo(px + 9, py); c.moveTo(px, py - 9); c.lineTo(px, py + 9); c.stroke();
+      c.fillStyle = ink; mono(c, 10); c.textAlign = 'left';
+      c.fillText('joint current', pad + 4, h - pad - 4);
+      c.save(); c.translate(pad + 12, pad + 4 + 62); c.rotate(-Math.PI / 2); c.fillText('motor temperature', 0, 0); c.restore();
+      readout(read, [
+        ['Your reading', ps.toFixed(2) + (ps > st.thr ? ' (anomaly)' : ' (normal)')],
+        ['Injected anomalies flagged', flaggedAnom + ' of 10'],
+        ['Normal points flagged', normalFlag + ' of ' + (data.length - 10)]
+      ]);
+    }
+    cvs.addEventListener('pointerdown', function (e) {
+      var rc = cvs.getBoundingClientRect();
+      st.probe = [clamp((e.clientX - rc.left - pad) / (rc.width - 2 * pad), 0, 1), clamp(1 - (e.clientY - rc.top - pad) / (rc.height - 2 * pad), 0, 1)];
+      redraw();
+    });
+    build(); redraw();
+    return { redraw: redraw };
+  }
+
+  function demoFlow(box) {
+    var N = 360, st = { shape: 'moons', t: 0.6, seed: 2 }, pts = [], anim = 0, shapeBtns = {}, tInp;
+    var controls = el('div', 'controls'), cvs, tag = el('p', 'demo-note');
+    var row = el('div', 'btn-row');
+    [['moons', 'Two moons'], ['ring', 'Ring']].forEach(function (s) {
+      shapeBtns[s[0]] = btn(row, s[1], function () { st.shape = s[0]; gen(); redraw(); });
+    });
+    btn(row, 'Play', play);
+    btn(row, 'Resample', function () { st.seed++; gen(); redraw(); });
+    box.appendChild(row);
+    box.appendChild(controls);
+    tInp = ctl(controls, 'Time t (0 is noise, 1 is data)', 0, 1, 0.01, st.t, function (v) { return v.toFixed(2); }, function (v) { st.t = v; redraw(); });
+    cvs = canvasIn(box, '16 / 10', 'Points moving along straight lines from a Gaussian noise cloud to a target shape as time increases.');
+    tag.textContent = 'These are the straight-line paths a rectified flow model is trained on. Noise and data points are paired at random, so paths cross. A network learns one velocity field that works for all of them on average, and sampling steps through that field. The num_steps setting in my MNIST experiments is how many steps that takes. This page shows the idea in two dimensions, not my trained UNets.';
+    box.appendChild(tag);
+    function gen() {
+      var R = rng(st.seed * 53 + 5); pts = [];
+      for (var i = 0; i < N; i++) {
+        var x0 = [gauss(R), gauss(R)], x1;
+        if (st.shape === 'moons') {
+          var a = Math.PI * R(), up = i % 2 === 0;
+          var px = up ? Math.cos(a) : 1 - Math.cos(a), py = up ? Math.sin(a) : 0.5 - Math.sin(a);
+          x1 = [1.6 * (px - 0.5) + 0.06 * gauss(R), 1.6 * (py - 0.25) + 0.06 * gauss(R)];
+        } else {
+          var b = 2 * Math.PI * R(), rad = 1.5 + 0.08 * gauss(R);
+          x1 = [rad * Math.cos(b), rad * Math.sin(b)];
+        }
+        pts.push([x0, x1]);
+      }
+    }
+    function redraw() {
+      var f = fit(cvs);
+      if (!f) return;
+      var c = f.c, w = f.w, h = f.h;
+      var line = css('--line'), muted = css('--muted'), acc = css('--accent'), dot = css('--plot-dot');
+      var sx = w / 6.4, sy = h / 4;
+      function X(v) { return w / 2 + v * sx; }
+      function Y(v) { return h / 2 - v * sy; }
+      c.strokeStyle = line; c.lineWidth = 1;
+      c.strokeRect(0.5, 0.5, w - 1, h - 1);
+      c.beginPath(); c.moveTo(0, Math.round(h / 2) + 0.5); c.lineTo(w, Math.round(h / 2) + 0.5); c.moveTo(Math.round(w / 2) + 0.5, 0); c.lineTo(Math.round(w / 2) + 0.5, h); c.stroke();
+      c.globalAlpha = 0.5; c.strokeStyle = line; c.lineWidth = 1;
+      for (var i = 0; i < 70; i++) {
+        c.beginPath(); c.moveTo(X(pts[i][0][0]), Y(pts[i][0][1])); c.lineTo(X(pts[i][1][0]), Y(pts[i][1][1])); c.stroke();
+      }
+      c.globalAlpha = 1;
+      c.fillStyle = acc;
+      for (var j = 0; j < N; j++) {
+        var x = (1 - st.t) * pts[j][0][0] + st.t * pts[j][1][0], y = (1 - st.t) * pts[j][0][1] + st.t * pts[j][1][1];
+        c.beginPath(); c.arc(X(x), Y(y), 2.4, 0, Math.PI * 2); c.fill();
+      }
+      c.fillStyle = muted; mono(c, 10); c.textAlign = 'left';
+      c.fillText('t = ' + st.t.toFixed(2), 10, 16);
+      Object.keys(shapeBtns).forEach(function (k) { shapeBtns[k].setAttribute('aria-pressed', String(k === st.shape)); });
+    }
+    function play() {
+      cancelAnimationFrame(anim);
+      if (reduced) { st.t = 1; tInp.value = 1; tInp.dispatchEvent(new Event('input')); return; }
+      var start = null;
+      function step(ts) {
+        if (start === null) start = ts;
+        var p = Math.min(1, (ts - start) / 3000);
+        st.t = p; tInp.value = p; tInp.dispatchEvent(new Event('input'));
+        if (p < 1) anim = requestAnimationFrame(step);
+      }
+      anim = requestAnimationFrame(step);
+    }
+    gen(); redraw();
+    return { redraw: redraw, stop: function () { cancelAnimationFrame(anim); } };
+  }
+
+  function demoCues(box) {
+    var RULES = {
+      contradiction: { label: 'contradiction', words: ['no', 'not', 'nobody', 'never', 'nothing', 'none', 'neither', 'nowhere', 'sleeping', 'naked'] },
+      entailment: { label: 'entailment', words: ['outdoors', 'outside', 'person', 'someone', 'something', 'animal', 'human', 'people', 'instrument'] },
+      neutral: { label: 'neutral', words: ['tall', 'first', 'famous', 'sad', 'favorite', 'because', 'also', 'popular', 'professional', 'competition'] }
+    };
+    var cueMap = Object.create(null);
+    Object.keys(RULES).forEach(function (k) { RULES[k].words.forEach(function (w) { cueMap[w] = k; }); });
+    var presets = ['Nobody is outside.', 'A person is outdoors.', 'The man is tall and famous.', 'A woman is sleeping.', 'A man plays an instrument.'];
+    var inputId = 'cue' + (++uid);
+    box.innerHTML = '<label for="' + inputId + '" class="note-chip" style="display:inline-block;margin-bottom:8px">Type a hypothesis</label><input id="' + inputId + '" class="cue-input" type="text" value="Nobody is outside." autocomplete="off">';
+    var input = box.querySelector('input');
+    var chips = el('div', 'chips');
+    presets.forEach(function (p) { btn(chips, p, function () { input.value = p; render(); }); });
+    box.appendChild(chips);
+    var out = el('div', 'cue-out');
+    out.setAttribute('aria-live', 'polite');
+    box.appendChild(out);
+    box.appendChild(el('p', 'demo-note', 'A toy rule-based guesser that only sees the hypothesis. It shows how cue words alone can predict a label, a kind of annotation artifact that has been reported for SNLI. It is not my classifier. In the project I trained a hypothesis-only classifier to measure this reliance, then used its logits to reduce it with logit subtraction.'));
+    function render() {
+      var text = input.value, parts = text.split(/([A-Za-z']+)/), counts = { contradiction: 0, entailment: 0, neutral: 0 };
+      out.innerHTML = '';
+      var s = el('p', 'sentence');
+      parts.forEach(function (part) {
+        var k = cueMap[part.toLowerCase()];
+        if (k) { var m = el('mark'); m.textContent = part; m.title = 'cue for ' + RULES[k].label; s.appendChild(m); counts[k]++; }
+        else s.appendChild(document.createTextNode(part));
+      });
+      out.appendChild(s);
+      var keys = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
+      var v = el('p', 'verdict');
+      if (!counts[keys[0]]) v.innerHTML = 'No cue words found. A guesser that only sees the hypothesis has nothing to go on.';
+      else if (counts[keys[0]] === counts[keys[1]]) v.innerHTML = 'Mixed cues, so the guesser cannot pick a label.';
+      else v.innerHTML = 'Guess from cues alone: <strong>' + RULES[keys[0]].label + '</strong>';
+      out.appendChild(v);
+    }
+    input.addEventListener('input', render);
+    render();
+    return {};
+  }
+
+  function demoPipeline(box) {
+    var STEPS = [
+      ['Ingest', 'Drug label documents are loaded and prepared so the system can search them.', 'Output: label text ready for search'],
+      ['Retrieve', 'Given a question, the system finds the passages of the label that are relevant to it.', 'Output: relevant passages'],
+      ['Constrain', 'The model gets those passages as its context (MCP-style context integration), so its answer stays tied to the label and made-up answers drop.', 'Output: question plus label context'],
+      ['Answer', 'An Azure OpenAI GPT model writes the answer from the context it was given.', 'Output: draft answer'],
+      ['Evaluate', 'Answers are compared with ground-truth answers using MiniLM Sentence Transformer similarity and ROUGE. Semantic similarity landed between 0.7 and 0.9.', 'Output: similarity and ROUGE scores']
+    ];
+    var bar = el('div', 'steps'), detail = el('div', 'step-detail'), b = [];
+    STEPS.forEach(function (s, i) {
+      var x = el('button', 'step', '<span class="n">' + (i + 1) + '</span>' + s[0]);
+      x.type = 'button';
+      x.addEventListener('click', function () { sel(i); });
+      bar.appendChild(x); b.push(x);
+    });
+    box.appendChild(bar);
+    box.appendChild(detail);
+    box.appendChild(el('p', 'demo-note', 'Pipeline overview. The stages run in this order for every question. No label text or model output is shown on this page.'));
+    function sel(i) {
+      b.forEach(function (x, j) { x.setAttribute('aria-pressed', String(i === j)); });
+      detail.innerHTML = '<h4>' + STEPS[i][0] + '</h4><p>' + STEPS[i][1] + '</p><p class="out">' + STEPS[i][2] + '</p>';
+    }
+    sel(2);
+    return {};
+  }
+
+  /* ---------- project data ---------- */
+  var PROJECTS = [
+    {
+      id: 'fda-label-qa', title: 'FDA Drug Labeling Q&A', status: 'published', featured: true,
+      blurb: 'A question answering system that answers only from FDA drug labels. Answers scored between 0.7 and 0.9 semantic similarity against ground truth. I co-authored the peer-reviewed paper, which appeared in MDPI.',
+      tags: ['Azure OpenAI', 'Sentence-Transformers', 'ROUGE', 'MCP-style context'],
+      demo: 'pipeline', demoTag: 'Overview',
+      overview: 'Drug labels are long and dense. This system answers a question from the label text and nothing else, so the answer can be checked against its source. I co-authored the peer-reviewed paper that describes it.',
+      built: ['A modular pipeline with separate stages for document ingestion, retrieval and LLM inference', 'Azure OpenAI GPT models that write the answers', 'MCP-style context integration that limits the model to the supplied label text, which cuts down hallucinations'],
+      results: ['Semantic similarity to ground truth between 0.7 and 0.9, measured with MiniLM Sentence Transformers', 'ROUGE as a second check on answer quality', 'Published as a peer-reviewed paper in MDPI'],
+      links: [{ label: 'Paper (MDPI)', href: '' }]
+    },
+    {
+      id: 'kalman-lstm', title: 'Kalman Filter + LSTM Path Estimation', status: 'progress',
+      blurb: 'A hybrid that estimates a robot\'s trajectory when sensors are noisy or blocked. Try the filter yourself in the demo.',
+      tags: ['PyTorch', 'Kalman filter', 'LSTM', 'Odometry'],
+      demo: 'kalman', demoTag: 'Synthetic data',
+      overview: 'A robot\'s sensors can be noisy, and sometimes they drop out completely, for example when something blocks the view. A Kalman filter smooths noisy readings, but when readings stop it can only extend its last velocity. An LSTM can learn how paths tend to continue. This project combines the two.',
+      built: ['Probabilistic filtering and sequence modeling in one system', 'Evaluation on real-world odometry data'],
+      results: ['Evaluation is still running, so there are no final numbers to report yet.'],
+      next: ['Extend the system with a vision-language model'],
+      links: [{ label: 'Code', href: '' }]
+    },
+    {
+      id: 'ros2-anomaly', title: 'ROS2 Real-Time Anomaly Detection', status: 'progress',
+      blurb: 'A PyTorch autoencoder that flags unusual robot telemetry, running as three ROS2 Humble nodes in Docker. Move the alert threshold in the demo.',
+      tags: ['ROS2 Humble', 'PyTorch', 'Docker', 'RViz2'],
+      demo: 'anomaly', demoTag: 'Simulated data',
+      overview: 'The idea is to learn what normal robot telemetry looks like and raise an alert when new readings do not fit. An autoencoder trained on normal data reconstructs normal readings well and unusual ones poorly, so the reconstruction error works as an anomaly score.',
+      built: ['A PyTorch autoencoder with layers 34 → 16 → 8 → 16 → 34', 'Three ROS2 nodes: a telemetry publisher, an anomaly detector and an anomaly logger', 'A Docker container running ROS2 Humble, with a successful colcon build'],
+      results: ['The build works. I have not yet run all three nodes together end to end.'],
+      next: ['Run the full pipeline', 'Set up RViz2 display forwarding with RobotModel and Marker displays', 'Record with rosbag2 and add a launch file', 'Push to GitHub, and optionally add a Gazebo simulation'],
+      links: [{ label: 'Code', href: '' }]
+    },
+    {
+      id: 'driving-planner', title: 'Autonomous Driving Planner', status: 'coursework',
+      blurb: 'CNN and Transformer planners that predict a vehicle\'s future waypoints from images and track boundaries.',
+      tags: ['PyTorch', 'CNN', 'Transformer', 'TensorBoard'],
+      overview: 'A planner takes what a vehicle sees and decides where it should go next. These models predict a short sequence of future waypoints from camera images and track boundary information.',
+      built: ['CNN and Transformer planners in PyTorch', 'A full training and evaluation pipeline', 'Custom trajectory error metrics, with training monitored in TensorBoard'],
+      results: ['In simulation, the predicted paths were smoother and deviated less from the track.'],
+      links: [{ label: 'Code', href: '' }]
+    },
+    {
+      id: 'snli-shortcuts', title: 'SNLI Shortcut Analysis', status: 'coursework',
+      blurb: 'ELECTRA-small fine-tuned on SNLI, with analysis of where it leans on cues in the hypothesis alone. Test the idea in the demo.',
+      tags: ['ELECTRA', 'Error analysis', 'Debiasing'],
+      demo: 'cues', demoTag: 'Toy rules',
+      overview: 'Natural language inference asks whether a hypothesis follows from a premise. Models can score well on SNLI partly by picking up cue words in the hypothesis, without reading the premise. This project measured that and tried to reduce it.',
+      built: ['Fine-tuned ELECTRA-small on SNLI', 'Error analysis on word overlap, negation cues, antonyms and hypothesis-only signals', 'Debiasing with hypothesis-only classifiers and logit subtraction'],
+      results: ['Improved results on hard examples', 'Validation accuracy stayed near 89%'],
+      links: [{ label: 'Code', href: '' }]
+    },
+    {
+      id: 'telemetry-iforest', title: 'Robot Telemetry Anomaly Pipeline', status: 'coursework',
+      blurb: 'An end-to-end scikit-learn pipeline that finds anomalies in robot arm data with an Isolation Forest. Click the plot in the demo to score a reading.',
+      tags: ['scikit-learn', 'Isolation Forest', 'Feature engineering'],
+      demo: 'forest', demoTag: 'Simulated data',
+      overview: 'Robot arms report a steady stream of numbers, and a failing part often shows up as readings that look unlike the rest. An Isolation Forest finds those readings by how quickly random splits can separate them from the other points.',
+      built: ['Parsing and feature expansion for joint positions, velocities, currents, tool acceleration and temperature', 'Normalization and an Isolation Forest model', 'Evaluation against labeled anomaly states'],
+      links: [{ label: 'Code', href: '' }]
+    },
+    {
+      id: 'generative-models', title: 'Generative Models (AI395T)', status: 'coursework',
+      blurb: 'Course implementations from quantization to diffusion, plus MNIST rectified flow trained on an A100. Watch noise turn into data in the demo.',
+      tags: ['PyTorch', 'Diffusion', 'LoRA / QLoRA', 'GANs'],
+      demo: 'flow', demoTag: 'Illustration',
+      overview: 'A graduate course that covered generative models by having us implement them. The rectified flow assignment trained a model to turn Gaussian noise into MNIST digits by following nearly straight paths.',
+      built: ['4-bit quantization, LoRA and QLoRA', 'CLIP and a SmolVLM fine-tune', 'A GPT, WGAN-GP, diffusion models, normalizing flows and energy-based models', 'MNIST rectified flow: unconditional and conditional UNets, 200 epochs each on an A100, with classifier-free guidance sampling and experiments on num_steps and CFG scale'],
+      links: [{ label: 'Code', href: '' }]
+    },
+    {
+      id: 'sentiment', title: 'Sentiment Classifier', status: 'coursework',
+      blurb: 'A PyTorch network with learned word embeddings that reached 77%+ accuracy after tuning.',
+      tags: ['PyTorch', 'Embeddings', 'Dropout'],
+      overview: 'A neural network that reads text and predicts whether the sentiment is positive or negative.',
+      built: ['Learned word embeddings feeding deep layers', 'A training pipeline with batching and dropout regularization', 'Reproducible experiments'],
+      results: ['Hyperparameter tuning brought classification accuracy above 77%'],
+      links: [{ label: 'Code', href: '' }]
+    },
+    {
+      id: 'career-buddy', title: 'Career Buddy', status: 'progress',
+      blurb: 'An agentic dashboard I\'m building on my own to track job applications and pull skills from my conversation history.',
+      tags: ['Agents', 'MCP', 'FastAPI', 'Streamlit'],
+      overview: 'A personal dashboard for a job search. It keeps track of applications and extracts the skills that come up in my conversation history, and it connects to tools through MCP.',
+      built: ['A job tracker', 'Skill extraction from conversation history', 'MCP integration so an agent can work with the tracker'],
+      results: ['Still in development, so there is nothing to measure yet.'],
+      links: [{ label: 'Code', href: '' }]
+    }
+  ];
+  var DEMOS = { kalman: demoKalman, anomaly: demoAnomaly, forest: demoForest, flow: demoFlow, cues: demoCues, pipeline: demoPipeline };
+  var STATUS = { published: 'Published', progress: 'In progress', coursework: 'Coursework' };
+  var byId = Object.create(null);
+  PROJECTS.forEach(function (p) { byId[p.id] = p; });
+
+  /* ---------- list view ---------- */
+  var grid = document.getElementById('grid'), count = document.getElementById('count');
+  var listView = document.getElementById('listView'), detailView = document.getElementById('detailView');
+  var cards = [];
+  PROJECTS.forEach(function (p) {
+    var a = el('a', 'project' + (p.featured ? ' featured' : ''));
+    a.href = '#' + p.id;
+    a.dataset.status = p.status;
+    a.innerHTML = '<div class="project-top"><h3>' + p.title.replace(/&/g, '&amp;') + '</h3><span class="status ' + (p.status === 'coursework' ? '' : p.status) + '">' + STATUS[p.status] + '</span></div>' +
+      '<p>' + p.blurb + '</p>' +
+      '<div class="project-foot"><ul class="tags">' + p.tags.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>' +
+      '<span class="open-hint">' + (p.demo ? '<span class="demo-chip">Demo</span> ' : '') + 'Open →</span></div>';
+    a.addEventListener('click', function (e) { e.preventDefault(); showProject(p.id, true); });
+    grid.appendChild(a); cards.push(a);
+  });
+  var btns = Array.prototype.slice.call(document.querySelectorAll('[data-filter]'));
+  function setFilter(f) {
+    var n = 0;
+    btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.filter === f)); });
+    cards.forEach(function (c) {
+      var show = f === 'all' || c.dataset.status === f;
+      c.hidden = !show;
+      if (show) n++;
+    });
+    count.textContent = n + ' of ' + cards.length;
+  }
+  btns.forEach(function (b) { b.addEventListener('click', function () { setFilter(b.dataset.filter); }); });
+  setFilter('all');
+
+  /* ---------- detail view ---------- */
+  var ro = null;
+  function stopActive() {
+    if (active && active.stop) active.stop();
+    active = null;
+    if (ro) { ro.disconnect(); ro = null; }
+  }
+  function ul(items) { return '<ul>' + items.map(function (i) { return '<li>' + i + '</li>'; }).join('') + '</ul>'; }
+  function navHash(h) {
+    try { history.pushState(null, '', '#' + h); }
+    catch (e) { try { location.hash = h; } catch (e2) {} }
+  }
+  function toTop() {
+    var s = document.getElementById('projects');
+    try { s.scrollIntoView({ block: 'start' }); } catch (e) {}
+  }
+  function showList(push) {
+    stopActive();
+    detailView.hidden = true; detailView.innerHTML = '';
+    listView.hidden = false;
+    if (push) { navHash('projects'); toTop(); }
+  }
+  function showProject(id, push) {
+    var p = byId[id];
+    if (!p) { showList(false); return; }
+    stopActive();
+    var i = PROJECTS.indexOf(p), prev = PROJECTS[i - 1], next = PROJECTS[i + 1];
+    var links = (p.links || []).filter(function (l) { return l.href; });
+    var h = '<button type="button" class="link-btn" id="back">← All projects</button>' +
+      '<header class="detail-head"><div><span class="status ' + (p.status === 'coursework' ? '' : p.status) + '">' + STATUS[p.status] + '</span></div>' +
+      '<h2>' + p.title.replace(/&/g, '&amp;') + '</h2>' +
+      '<ul class="tags">' + p.tags.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul></header>' +
+      '<div class="detail-grid' + (p.demo ? ' has-demo' : '') + '"><div class="detail-text"><p class="lead">' + p.overview + '</p>' +
+      (p.built ? '<h3>What I built</h3>' + ul(p.built) : '') +
+      (p.results ? '<h3>Results</h3>' + ul(p.results) : '') +
+      (p.next ? '<h3>Still to do</h3>' + ul(p.next) : '') +
+      (links.length ? '<div class="detail-links">' + links.map(function (l) { return '<a class="btn" target="_blank" rel="noopener" href="' + l.href + '">' + l.label + '</a>'; }).join('') + '</div>' : '') +
+      '</div>' +
+      (p.demo ? '<div class="demo-card"><div class="demo-head"><span class="plot-title">Interactive demo</span><span class="note-chip">' + p.demoTag + '</span></div><div id="demoBody"></div></div>' : '') +
+      '</div>' +
+      '<nav class="pager" aria-label="More projects">' +
+      (prev ? '<button type="button" class="link-btn" data-go="' + prev.id + '">← ' + prev.title.replace(/&/g, '&amp;') + '</button>' : '<span></span>') +
+      (next ? '<button type="button" class="link-btn" data-go="' + next.id + '">' + next.title.replace(/&/g, '&amp;') + ' →</button>' : '<span></span>') +
+      '</nav>';
+    detailView.innerHTML = h;
+    listView.hidden = true; detailView.hidden = false;
+    document.getElementById('back').addEventListener('click', function () { showList(true); });
+    Array.prototype.forEach.call(detailView.querySelectorAll('[data-go]'), function (b) {
+      b.addEventListener('click', function () { showProject(b.dataset.go, true); });
+    });
+    if (p.demo) {
+      var body = document.getElementById('demoBody');
+      active = DEMOS[p.demo](body) || {};
+      if (window.ResizeObserver && active.redraw) {
+        ro = new ResizeObserver(function () { if (active && active.redraw) active.redraw(); });
+        ro.observe(body);
+      }
+    }
+    if (push) { navHash(id); toTop(); }
+  }
+  function route() {
+    var id = (location.hash || '').slice(1);
+    if (byId[id]) { showProject(id, false); toTop(); }
+    else if (!detailView.hidden) showList(false);
+  }
+  window.addEventListener('hashchange', route);
+  window.addEventListener('popstate', route);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !detailView.hidden) showList(true); });
+  /* Nav and hero links to Projects always return to the list */
+  ['nav-projects', 'cta-projects'].forEach(function (id) {
+    document.getElementById(id).addEventListener('click', function () { if (!detailView.hidden) showList(false); });
+  });
+
+  /* ---------- wallpaper, resume button, header ---------- */
+  var wall = document.getElementById('wall'), wallImg = document.getElementById('wallImg');
+  var picker = document.getElementById('wallPicker'), wallFile = document.getElementById('wallFile');
+  var WALLS = { circuit: 'Circuit', neural: 'Neural net', blueprint: 'Blueprint', aurora: 'Aurora', stream: 'Data stream', hex: 'Hex grid', lidar: 'LiDAR', loss: 'Loss landscape', stars: 'Constellation', telemetry: 'Telemetry' };
+  var wallKind = DEFAULT_WALLPAPER, customUrl = HERO_IMAGE;
+  try { var savedWall = localStorage.getItem('wallpaper'); if (SHOW_WALLPAPER_PICKER && savedWall && WALLS[savedWall] && !HERO_IMAGE) wallKind = savedWall; } catch (e) {}
+  if (!WALLS[wallKind]) wallKind = 'neural';
+
+  function wallBase(c, w, h, a, b) {
+    var g = c.createLinearGradient(0, 0, w, h);
+    g.addColorStop(0, a); g.addColorStop(1, b);
+    c.fillStyle = g; c.fillRect(0, 0, w, h);
+  }
+  function wallCircuit(c, w, h) {
+    wallBase(c, w, h, '#08161B', '#0E2B33');
+    var R = rng(21), S = 36, dirs = [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]];
+    c.lineWidth = 1.5; c.lineJoin = 'round';
+    for (var i = 0; i < 80; i++) {
+      var x = Math.round(R() * w / S) * S, y = Math.round(R() * h / S) * S, d = Math.floor(R() * 8), hot = R() < 0.12;
+      c.strokeStyle = hot ? 'rgba(157,184,255,0.6)' : 'rgba(110,190,200,0.24)';
+      c.beginPath(); c.moveTo(x, y);
+      var steps = 4 + Math.floor(R() * 7);
+      for (var s = 0; s < steps; s++) {
+        var len = 1 + Math.floor(R() * 3);
+        x += dirs[d][0] * S * len; y += dirs[d][1] * S * len; c.lineTo(x, y);
+        var t = R(); if (t < 0.4) d = (d + 1) % 8; else if (t < 0.7) d = (d + 7) % 8;
+      }
+      c.stroke();
+      c.fillStyle = c.strokeStyle; c.beginPath(); c.arc(x, y, 3.5, 0, Math.PI * 2); c.fill();
+    }
+  }
+  function wallNeural(c, w, h) {
+    wallBase(c, w, h, '#070C26', '#13235F');
+    var R = rng(8), cols = 7, layers = [], k, i, j;
+    for (k = 0; k < cols; k++) {
+      var n = 4 + Math.floor(R() * 4), L = [];
+      for (j = 0; j < n; j++) L.push({ x: w * (0.05 + 0.9 * k / (cols - 1)) + (R() - 0.5) * w * 0.03, y: h * (0.08 + 0.84 * R()) });
+      layers.push(L);
+    }
+    c.lineWidth = 1; c.strokeStyle = 'rgba(157,184,255,0.2)';
+    for (k = 0; k < cols - 1; k++) layers[k].forEach(function (a) {
+      for (var m = 0; m < 3; m++) {
+        var b = layers[k + 1][Math.floor(R() * layers[k + 1].length)];
+        c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y); c.stroke();
+      }
+    });
+    c.shadowColor = 'rgba(157,184,255,0.9)'; c.shadowBlur = 14; c.fillStyle = 'rgba(190,208,255,0.85)';
+    layers.forEach(function (L) { L.forEach(function (p) { c.beginPath(); c.arc(p.x, p.y, 3 + R() * 3, 0, Math.PI * 2); c.fill(); }); });
+    c.shadowBlur = 0;
+  }
+  function wallBlueprint(c, w, h) {
+    c.fillStyle = '#0C3470'; c.fillRect(0, 0, w, h);
+    var S = 24, i;
+    c.lineWidth = 1;
+    for (i = 0; i * S <= w; i++) { c.strokeStyle = i % 5 === 0 ? 'rgba(255,255,255,0.17)' : 'rgba(255,255,255,0.07)'; c.beginPath(); c.moveTo(i * S + 0.5, 0); c.lineTo(i * S + 0.5, h); c.stroke(); }
+    for (i = 0; i * S <= h; i++) { c.strokeStyle = i % 5 === 0 ? 'rgba(255,255,255,0.17)' : 'rgba(255,255,255,0.07)'; c.beginPath(); c.moveTo(0, i * S + 0.5); c.lineTo(w, i * S + 0.5); c.stroke(); }
+    var bx = w * 0.08, by = h * 0.88, L1 = Math.min(h * 0.4, w * 0.18), L2 = L1 * 0.6, a1 = -1.05, a2 = -0.15;
+    var j1 = [bx + L1 * Math.cos(a1), by + L1 * Math.sin(a1)], j2 = [j1[0] + L2 * Math.cos(a2), j1[1] + L2 * Math.sin(a2)];
+    c.strokeStyle = 'rgba(255,255,255,0.65)'; c.lineWidth = 2;
+    c.strokeRect(bx - 40, by, 80, 18);
+    [[bx, by, j1[0], j1[1]], [j1[0], j1[1], j2[0], j2[1]]].forEach(function (s) { c.beginPath(); c.moveTo(s[0], s[1]); c.lineTo(s[2], s[3]); c.stroke(); });
+    [[bx, by], j1, j2].forEach(function (p) { c.beginPath(); c.arc(p[0], p[1], 14, 0, Math.PI * 2); c.stroke(); c.beginPath(); c.arc(p[0], p[1], 4, 0, Math.PI * 2); c.stroke(); });
+    c.lineWidth = 1; c.setLineDash([5, 5]);
+    c.beginPath(); c.arc(bx, by, L1, a1 - 0.5, a1 + 0.5); c.stroke();
+    c.beginPath(); c.arc(j1[0], j1[1], L2, a2 - 0.6, a2 + 0.6); c.stroke();
+    c.setLineDash([]);
+    c.fillStyle = 'rgba(255,255,255,0.7)'; c.font = '400 12px ' + css('--font-mono');
+    c.fillText('L1', (bx + j1[0]) / 2 + 12, (by + j1[1]) / 2);
+    c.fillText('L2', (j1[0] + j2[0]) / 2 + 10, (j1[1] + j2[1]) / 2 - 10);
+    c.fillText('θ1', bx + 24, by - 20);
+    c.fillText('θ2', j1[0] + 24, j1[1] - 14);
+  }
+  function wallAurora(c, w, h) {
+    c.fillStyle = '#060A12'; c.fillRect(0, 0, w, h);
+    [[0.2, 0.3, 0.55, 'rgba(40,120,200,0.45)'], [0.75, 0.25, 0.5, 'rgba(30,170,150,0.35)'], [0.55, 0.85, 0.6, 'rgba(70,90,200,0.3)'], [0.1, 0.9, 0.4, 'rgba(30,150,170,0.25)']].forEach(function (b) {
+      var r = Math.max(w, h) * b[2], g = c.createRadialGradient(w * b[0], h * b[1], 0, w * b[0], h * b[1], r);
+      g.addColorStop(0, b[3]); g.addColorStop(1, 'rgba(6,10,18,0)');
+      c.fillStyle = g; c.fillRect(0, 0, w, h);
+    });
+  }
+  function wallStream(c, w, h) {
+    wallBase(c, w, h, '#050B1E', '#0A2150');
+    var R = rng(14), i;
+    var g = c.createRadialGradient(w * 0.35, h * 0.5, 0, w * 0.35, h * 0.5, w * 0.55);
+    g.addColorStop(0, 'rgba(40,120,255,0.38)'); g.addColorStop(1, 'rgba(5,11,30,0)');
+    c.fillStyle = g; c.fillRect(0, 0, w, h);
+    for (i = 0; i < 150; i++) {
+      var y = h * (0.3 + 0.4 * R()) + (R() - 0.5) * h * 0.06, x0 = w * (0.05 + 0.55 * R()), len = w * (0.08 + 0.42 * R()), a = 0.12 + 0.5 * R();
+      var lg = c.createLinearGradient(x0, y, x0 + len, y);
+      lg.addColorStop(0, 'rgba(120,200,255,0)'); lg.addColorStop(1, 'rgba(120,200,255,' + a.toFixed(2) + ')');
+      c.strokeStyle = lg; c.lineWidth = 1 + R() * 2; c.beginPath(); c.moveTo(x0, y); c.lineTo(x0 + len, y); c.stroke();
+    }
+    for (i = 0; i < 170; i++) {
+      var px = w * (0.2 + 0.78 * R()), py = h * (0.28 + 0.44 * R());
+      c.fillStyle = 'rgba(170,220,255,' + (0.2 + 0.6 * R()).toFixed(2) + ')';
+      c.beginPath(); c.arc(px, py, 1 + R() * 2.2, 0, Math.PI * 2); c.fill();
+    }
+  }
+  function wallHex(c, w, h) {
+    wallBase(c, w, h, '#04141A', '#0A2B30');
+    var R = rng(33), s = Math.max(34, Math.min(w, h) / 11), hw = s * Math.sqrt(3), rows = Math.ceil(h / (s * 1.5)) + 1, cols = Math.ceil(w / hw) + 1;
+    c.lineWidth = 1;
+    for (var r = 0; r < rows; r++) for (var q = 0; q < cols; q++) {
+      var cx = q * hw + (r % 2 ? hw / 2 : 0), cy = r * s * 1.5;
+      c.beginPath();
+      for (var k = 0; k < 6; k++) {
+        var a = Math.PI / 180 * (60 * k - 30), px = cx + s * Math.cos(a), py = cy + s * Math.sin(a);
+        if (k === 0) c.moveTo(px, py); else c.lineTo(px, py);
+      }
+      c.closePath();
+      var t = R();
+      if (t < 0.07) { c.fillStyle = 'rgba(80,230,190,0.3)'; c.fill(); }
+      else if (t < 0.2) { c.fillStyle = 'rgba(80,200,200,0.1)'; c.fill(); }
+      c.strokeStyle = 'rgba(90,210,200,0.22)'; c.stroke();
+    }
+  }
+  function rayHit(ox, oy, dx, dy, s) {
+    var ex = s[2] - s[0], ey = s[3] - s[1], den = dx * ey - dy * ex;
+    if (Math.abs(den) < 1e-9) return -1;
+    var t = ((s[0] - ox) * ey - (s[1] - oy) * ex) / den, u = ((s[0] - ox) * dy - (s[1] - oy) * dx) / den;
+    return (t > 0 && u >= 0 && u <= 1) ? t : -1;
+  }
+  function wallLidar(c, w, h) {
+    c.fillStyle = '#04090A'; c.fillRect(0, 0, w, h);
+    var R = rng(9), ox = w * 0.2, oy = h * 0.76, i, j;
+    c.lineWidth = 1; c.strokeStyle = 'rgba(80,220,170,0.16)';
+    for (i = 1; i <= 9; i++) { c.beginPath(); c.arc(ox, oy, i * Math.min(w, h) * 0.16, 0, Math.PI * 2); c.stroke(); }
+    var N = [[0.04,0.08,0.96,0.08],[0.96,0.08,0.96,0.92],[0.96,0.92,0.04,0.92],[0.04,0.92,0.04,0.08],[0.34,0.28,0.5,0.28],[0.5,0.28,0.5,0.46],[0.5,0.46,0.34,0.46],[0.34,0.46,0.34,0.28],[0.62,0.5,0.78,0.5],[0.78,0.5,0.78,0.7],[0.78,0.7,0.62,0.7],[0.62,0.7,0.62,0.5],[0.48,0.72,0.58,0.72],[0.58,0.72,0.58,0.86],[0.58,0.86,0.48,0.86],[0.48,0.86,0.48,0.72],[0.1,0.22,0.17,0.22],[0.17,0.22,0.17,0.4],[0.17,0.4,0.1,0.4],[0.1,0.4,0.1,0.22],[0.8,0.16,0.9,0.16],[0.9,0.16,0.9,0.3],[0.9,0.3,0.8,0.3],[0.8,0.3,0.8,0.16]];
+    var segs = N.map(function (s) { return [s[0] * w, s[1] * h, s[2] * w, s[3] * h]; });
+    for (i = 0; i < 2600; i++) {
+      var ang = (i / 2600) * Math.PI * 2, dx = Math.cos(ang), dy = Math.sin(ang), best = Infinity;
+      for (j = 0; j < segs.length; j++) { var t = rayHit(ox, oy, dx, dy, segs[j]); if (t > 0 && t < best) best = t; }
+      if (!isFinite(best)) continue;
+      best += gauss(R) * 1.2;
+      var px = ox + dx * best, py = oy + dy * best, fade = Math.max(0.4, 1 - best / (Math.max(w, h) * 1.1));
+      if (i % 110 === 0) { c.strokeStyle = 'rgba(80,240,180,0.14)'; c.beginPath(); c.moveTo(ox, oy); c.lineTo(px, py); c.stroke(); }
+      c.fillStyle = 'rgba(100,255,190,' + (0.35 + 0.55 * fade).toFixed(2) + ')';
+      c.beginPath(); c.arc(px, py, 1.9, 0, Math.PI * 2); c.fill();
+    }
+    c.shadowColor = 'rgba(100,255,190,0.9)'; c.shadowBlur = 16; c.fillStyle = '#7CFFC4';
+    c.beginPath(); c.arc(ox, oy, 5, 0, Math.PI * 2); c.fill(); c.shadowBlur = 0;
+  }
+  function wallLoss(c, w, h) {
+    wallBase(c, w, h, '#0D0F1E', '#181B33');
+    var asp = w / h;
+    var wells = [[0.25 * asp, 0.7, 0.22, 0.9], [0.62 * asp, 0.35, 0.18, 0.7], [0.88 * asp, 0.78, 0.15, 0.5]];
+    function z(x, y) {
+      var v = 1;
+      for (var i = 0; i < wells.length; i++) { var dx = x - wells[i][0], dy = y - wells[i][1]; v -= wells[i][3] * Math.exp(-(dx * dx + dy * dy) / (2 * wells[i][2] * wells[i][2])); }
+      return v + 0.03 * Math.sin(9 * x) * Math.sin(7 * y);
+    }
+    var cell = 3, cw = Math.ceil(w / cell), ch = Math.ceil(h / cell), off = document.createElement('canvas');
+    off.width = cw; off.height = ch;
+    var octx = off.getContext('2d'), img = octx.createImageData(cw, ch), L = 20, band = [], i, j;
+    for (j = 0; j < ch; j++) for (i = 0; i < cw; i++) band.push(Math.floor(z(i / cw * asp, j / ch) * L));
+    for (j = 0; j < ch - 1; j++) for (i = 0; i < cw - 1; i++) {
+      var b = band[j * cw + i];
+      if (b !== band[j * cw + i + 1] || b !== band[(j + 1) * cw + i]) {
+        var k = (j * cw + i) * 4;
+        img.data[k] = 150; img.data[k + 1] = 160; img.data[k + 2] = 255; img.data[k + 3] = 70 + (b % 5 === 0 ? 70 : 0);
+      }
+    }
+    octx.putImageData(img, 0, 0);
+    c.imageSmoothingEnabled = true; c.drawImage(off, 0, 0, w, h);
+    var x = 0.4 * asp, y = 0.08, pts = [[x, y]], e = 0.002;
+    for (i = 0; i < 70; i++) {
+      var gx = (z(x + e, y) - z(x - e, y)) / (2 * e), gy = (z(x, y + e) - z(x, y - e)) / (2 * e), gl = Math.sqrt(gx * gx + gy * gy) || 1;
+      x -= 0.014 * gx / gl; y -= 0.014 * gy / gl; pts.push([x, y]);
+    }
+    c.strokeStyle = '#FFC15E'; c.lineWidth = 2.2; c.lineJoin = 'round'; c.beginPath();
+    pts.forEach(function (p, n) { var px = p[0] / asp * w, py = p[1] * h; if (n === 0) c.moveTo(px, py); else c.lineTo(px, py); });
+    c.stroke();
+    c.fillStyle = '#FFC15E';
+    pts.forEach(function (p, n) { if (n % 5 === 0) { c.beginPath(); c.arc(p[0] / asp * w, p[1] * h, 3.5, 0, Math.PI * 2); c.fill(); } });
+  }
+  function wallStars(c, w, h) {
+    wallBase(c, w, h, '#03060F', '#0B1330');
+    var R = rng(5), pts = [], i, j, n = Math.round(w * h / 5500), D = Math.min(w, h) * 0.17;
+    for (i = 0; i < n; i++) pts.push([R() * w, R() * h, 0.8 + R() * 1.8]);
+    c.lineWidth = 1;
+    for (i = 0; i < n; i++) for (j = i + 1; j < n; j++) {
+      var dx = pts[i][0] - pts[j][0], dy = pts[i][1] - pts[j][1], d = Math.sqrt(dx * dx + dy * dy);
+      if (d < D) { c.strokeStyle = 'rgba(180,200,255,' + (0.42 * (1 - d / D)).toFixed(3) + ')'; c.beginPath(); c.moveTo(pts[i][0], pts[i][1]); c.lineTo(pts[j][0], pts[j][1]); c.stroke(); }
+    }
+    c.shadowColor = 'rgba(200,215,255,0.9)'; c.shadowBlur = 8; c.fillStyle = 'rgba(235,242,255,0.9)';
+    pts.forEach(function (p) { c.beginPath(); c.arc(p[0], p[1], p[2], 0, Math.PI * 2); c.fill(); });
+    c.shadowBlur = 0;
+  }
+  function wallTelemetry(c, w, h) {
+    wallBase(c, w, h, '#0A1114', '#0F1B21');
+    var R = rng(41), i, S = 40;
+    c.lineWidth = 1; c.strokeStyle = 'rgba(160,210,220,0.06)';
+    for (i = 0; i * S <= w; i++) { c.beginPath(); c.moveTo(i * S + 0.5, 0); c.lineTo(i * S + 0.5, h); c.stroke(); }
+    for (i = 0; i * S <= h; i++) { c.beginPath(); c.moveTo(0, i * S + 0.5); c.lineTo(w, i * S + 0.5); c.stroke(); }
+    var cols = ['rgba(90,220,240,0.7)', 'rgba(255,193,94,0.65)', 'rgba(110,235,160,0.65)', 'rgba(255,130,150,0.55)', 'rgba(170,190,255,0.65)'];
+    var n = cols.length;
+    for (var t = 0; t < n; t++) {
+      var cy = h * (0.14 + 0.72 * t / (n - 1)), amp = h * (0.04 + 0.025 * R()), f1 = 0.006 + 0.01 * R(), f2 = 0.02 + 0.02 * R(), ph = R() * 6;
+      c.strokeStyle = cols[t]; c.lineWidth = 1.5; c.lineJoin = 'round'; c.beginPath();
+      for (var x = 0; x <= w; x += 2) {
+        var spike = (x > w * 0.62 && x < w * 0.66 && t === 2) ? Math.sin((x - w * 0.62) / (w * 0.04) * Math.PI) * amp * 2.2 : 0;
+        var y = cy + amp * Math.sin(x * f1 + ph) + amp * 0.35 * Math.sin(x * f2 + ph * 2) + gauss(R) * 1.1 + spike;
+        if (x === 0) c.moveTo(x, y); else c.lineTo(x, y);
+      }
+      c.stroke();
+    }
+    c.fillStyle = 'rgba(255,130,150,0.1)'; c.fillRect(w * 0.61, 0, w * 0.06, h);
+    c.strokeStyle = 'rgba(255,255,255,0.25)'; c.setLineDash([5, 5]);
+    c.beginPath(); c.moveTo(w * 0.36, 0); c.lineTo(w * 0.36, h); c.stroke(); c.setLineDash([]);
+  }
+  var WALLDRAW = { circuit: wallCircuit, neural: wallNeural, blueprint: wallBlueprint, aurora: wallAurora, stream: wallStream, hex: wallHex, lidar: wallLidar, loss: wallLoss, stars: wallStars, telemetry: wallTelemetry };
+
+  function paintWall() {
+    if (customUrl) {
+      wall.style.display = 'none';
+      wallImg.style.backgroundImage = 'url("' + customUrl + '")';
+      wallImg.style.display = 'block';
+    } else {
+      wallImg.style.display = 'none';
+      wall.style.display = 'block';
+      var f = fit(wall);
+      if (f) WALLDRAW[wallKind](f.c, f.w, f.h);
+    }
+    document.getElementById('hero').classList.toggle('has-img', !!customUrl);
+    Array.prototype.forEach.call(picker.querySelectorAll('[data-wall]'), function (b) {
+      b.setAttribute('aria-pressed', String(!customUrl && b.dataset.wall === wallKind));
+    });
+  }
+  if (!SHOW_WALLPAPER_PICKER) { picker.remove(); wallFile.remove(); }
+  if (SHOW_WALLPAPER_PICKER) {
+    picker.hidden = false;
+    var lbl = el('span', 'lbl', 'Wallpaper');
+    picker.appendChild(lbl);
+    Object.keys(WALLS).forEach(function (k) {
+      var b = btn(picker, WALLS[k], function () {
+        wallKind = k; customUrl = '';
+        try { localStorage.setItem('wallpaper', k); } catch (e) {}
+        paintWall();
+      }, '');
+      b.dataset.wall = k;
+    });
+    btn(picker, 'Use my image', function () { wallFile.click(); }, '');
+    wallFile.addEventListener('change', function () {
+      var file = wallFile.files && wallFile.files[0];
+      if (!file) return;
+      var rd = new FileReader();
+      rd.onload = function () { customUrl = String(rd.result); paintWall(); };
+      rd.readAsDataURL(file);
+    });
+  }
+  var heroEl = document.getElementById('hero');
+  paintWall();
+  if (window.ResizeObserver) new ResizeObserver(function () { if (!customUrl) paintWall(); }).observe(heroEl);
+  else window.addEventListener('resize', function () { if (!customUrl) paintWall(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(paintWall);
+
+  var toastEl = document.getElementById('toast'), toastTimer = 0;
+  function toast(msg) {
+    toastEl.textContent = msg; toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.hidden = true; }, 4000);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-resume]'), function (a) {
+    if (RESUME_URL) { a.href = RESUME_URL; a.target = '_blank'; a.rel = 'noopener'; }
+    else a.addEventListener('click', function (e) { e.preventDefault(); toast('Resume link not added yet. Set RESUME_URL in the file.'); });
+  });
+
+  var siteHead = document.getElementById('siteHead');
+  function onScroll() { siteHead.classList.toggle('solid', (window.scrollY || document.documentElement.scrollTop || 0) > 40); }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ---------- contact links ---------- */
+  var holder = document.getElementById('links');
+  LINKS.forEach(function (l, i) {
+    var a = document.createElement('a');
+    a.className = i === 0 ? 'btn primary' : 'btn';
+    a.href = l.href; a.textContent = l.label; a.target = '_blank'; a.rel = 'noopener';
+    holder.appendChild(a);
+  });
+
+  /* ---------- redraw on resize and theme change ---------- */
+  function redrawAll() { if (active && active.redraw) active.redraw(); }
+  try {
+    if (!window.ResizeObserver) window.addEventListener('resize', redrawAll);
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mq.addEventListener) mq.addEventListener('change', redrawAll);
+    new MutationObserver(redrawAll).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  } catch (e) {}
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(redrawAll);
+  route();
+})();
+</script>
+
+</body>
+</html>
